@@ -37,10 +37,29 @@ def extract(src, dst):
 
         cap.release()
 
-print("Extracting UNSEEN REAL faces...")
-extract(f"{VIDEO_ROOT}/real", f"{OUT_ROOT}/real")
+if __name__ == "__main__":
+    print("Extracting UNSEEN REAL faces...")
+    extract(f"{VIDEO_ROOT}/real", f"{OUT_ROOT}/real")
 
-print("Extracting UNSEEN FAKE faces...")
-extract(f"{VIDEO_ROOT}/fake", f"{OUT_ROOT}/fake")
+    print("Extracting UNSEEN FAKE faces...")
+    extract(f"{VIDEO_ROOT}/fake", f"{OUT_ROOT}/fake")
 
-print("✅ Unseen face extraction complete")
+    print("✅ Unseen face extraction complete")
+
+import torch
+
+def preprocess_image(image_path):
+    """
+    Preprocess a single image for deepfake CNN inference.
+    Returns a 4D tensor: (1, 3, 224, 224)
+    """
+    img = Image.open(image_path).convert("RGB")
+    face = mtcnn(img)
+
+    if face is None:
+        raise ValueError("No face detected in image")
+
+    # mtcnn returns (3, 224, 224)
+    face = face.unsqueeze(0)  # (1, 3, 224, 224)
+    return face
+
