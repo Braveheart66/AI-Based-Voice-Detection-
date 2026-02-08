@@ -1,21 +1,10 @@
 import torch.nn as nn
-from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
+from torchvision import models
 
-class DeepfakeCNN(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.features = efficientnet_b0(
-            weights=EfficientNet_B0_Weights.DEFAULT
-        ).features
+def get_deepfake_model():
+    model = models.efficientnet_b0(weights=None)
 
-        self.avgpool = nn.AdaptiveAvgPool2d(1)
-        self.classifier = nn.Sequential(
-            nn.Dropout(0.2),
-            nn.Linear(1280, 2)
-        )
+    in_features = model.classifier[1].in_features
+    model.classifier[1] = nn.Linear(in_features, 2)  # <-- MUST BE 2
 
-    def forward(self, x):
-        x = self.features(x)
-        x = self.avgpool(x)
-        x = x.flatten(1)
-        return self.classifier(x)
+    return model

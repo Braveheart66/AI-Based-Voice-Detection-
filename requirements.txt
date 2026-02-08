@@ -50,3 +50,6 @@ langdetect==1.0.9
 # Optional / Stability
 # =================================================
 regex==2023.12.25
+
+SpeechRecognition==3.10.1
+

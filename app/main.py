@@ -1,10 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.routes import fraud, deepfake
 
-app = FastAPI(
-    title="AI-Based Fraud & Deepfake Detection",
-    version="1.0"
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-app.include_router(fraud.router, prefix="/api/fraud", tags=["Fraud"])
-app.include_router(deepfake.router, prefix="/api/deepfake", tags=["Deepfake"])
+app.include_router(fraud.router, prefix="/api/fraud")
+app.include_router(deepfake.router, prefix="/api/deepfake")
